@@ -26,7 +26,6 @@ suppressMessages(library(docopt))
 # Get command-line arguments
 opt <- docopt(doc)
 
-print("pippo")
 opt$min_exp <- as.numeric(opt$min_exp)
 opt$min_samples_ratio <- as.numeric(opt$min_samples_ratio)
 
@@ -34,6 +33,20 @@ warning(paste("min_samples_ratio: ", opt$min_samples_ratio))
 
 # to debug
 #opt<-list(condition="SampleType", g1="D",g2="H",min_exp=1,min_samples_ratio=0.5)
+
+test<-FALSE
+if(test){
+    opt<-list()
+    setwd("/home/epigen/Proserpio_Vulvodinia/dataset/analisi_first_draft")
+    opt$min_exp <- 1
+    opt$min_samples_ratio <- 0.5
+    use_raw_counts <- FALSE
+    opt$gene_expression_matrix <- "GEP.count.gz"
+    opt$sample_metadata<-"metadata.txt"
+    opt$condition<-"disease"
+    opt$g1<-"D"
+    opt$g2<-"H"
+}
 
 ###########################################
 #
@@ -104,10 +117,10 @@ counts <- counts[rownames(counts) %in% expressed_genes,]
 
 y <- DGEList(counts=counts);
 y <- calcNormFactors(y,method="TMM");
-y <- cpm(y, normalized.lib.sizes=TRUE, log=TRUE)
+counts_norm <- cpm(y, normalized.lib.sizes=TRUE, log=TRUE)
 
-group1 <- y[, metadata[[opt$condition]] == opt$g1]
-group2 <- y[, metadata[[opt$condition]] == opt$g2]
+group1 <- counts_norm[, metadata[[opt$condition]] == opt$g1]
+group2 <- counts_norm[, metadata[[opt$condition]] == opt$g2]
 
 
 
@@ -130,7 +143,7 @@ mann_whitney <- function(gene) {
 median_change <- apply(group1, 1, median) - apply(group2, 1, median)
 
 # Compute p-values
-p_values <- apply(counts, 1, mann_whitney) 
+p_values <- apply(counts_norm, 1, mann_whitney) 
 
 # Adjust p-values using Benjamini-Hochberg method
 p_values_adjusted <- p.adjust(p_values, method = "BH")
