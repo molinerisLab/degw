@@ -1,6 +1,6 @@
 # degw
 Non parametric differentially gene expression analysis
-
+```
 Usage:
   DEGwilcox <gene_expression_matrix> <sample_metadata> [--condition=<condition>] [--g1=<g1>] [--g2=<g2>] [--min_exp=<min_exp>] [--min_samples_ratio=<min_sampes_ratio>]
 
@@ -16,3 +16,4 @@ Options:
   --min_exp <min_exp>            Minimum expression levels (cpm) to consider a gene as expressed [default: 1].
   --min_samples_ratio <min_sampes_ratio>            If less that <min_exp_sampes_ratio> (rounded up) samples show a gene expressed in at least one group, then the gene if filtered out as not expressed [default: 0.5].
 ' -> doc
+```
